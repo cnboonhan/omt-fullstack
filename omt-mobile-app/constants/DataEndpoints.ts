@@ -1,0 +1,2 @@
+export const RetrievalEndpoint = "https://hroo3yirudk7233rzbwd4w44zu0nrrna.lambda-url.ap-southeast-1.on.aws/"
+export const UpdateEndpoint = "https://kreyl3bt3j6etis7jychh3htqe0qvlqi.lambda-url.ap-southeast-1.on.aws/"

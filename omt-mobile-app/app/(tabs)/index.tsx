@@ -1,13 +1,29 @@
 import { View } from '@/components/Themed';
-import React from 'react';
-import { SafeAreaView, ScrollView, StyleSheet, Text } from 'react-native';
+import React, { useState } from 'react';
+import { SafeAreaView, ScrollView, StyleSheet, Text, FlatList } from 'react-native';
 import { SearchBar } from '@rneui/base';
 import { useColorScheme } from '@/components/useColorScheme';
 import { SectionHeaders } from "@/models/DataModels";
+import { UpdateEndpoint, RetrievalEndpoint } from "@/constants/DataEndpoints";
 
-export default function TabOneScreen() {
+export default function SearchScreen() {
   const colorScheme = useColorScheme();
   const useLightMode = colorScheme === 'light';
+  const [omtData, setOmtData] = useState([]);
+
+  fetch(RetrievalEndpoint)
+    .then(response => response.json())
+    .then(data => {
+      // Handle the response data here
+      if (JSON.stringify(data) !== JSON.stringify(omtData)) {
+        console.log("Data has been updated.")
+        setOmtData(data);
+      }
+    })
+    .catch(error => {
+      // Handle any errors that occurred during the request
+      console.error(error);
+    });
 
   return (
     <View style={styles.searchScreenContainer}>
@@ -20,10 +36,33 @@ export default function TabOneScreen() {
             <Text style={styles.thirdHeader}>{SectionHeaders["I"]["A"]["1"]["thirdHeader"]}</Text>
           </View>
           <View>
+            <FlatList
+              data={omtData.filter((item: { title: string, code: string }) => item.code.startsWith('I-A-1')) as { title: string, code: string }[]} // Add type annotation for omtData
+              keyExtractor={(_, index) => index.toString()}
+              renderItem={({ item }) => (
+                <View>
+                  <Text style={styles.item}>{item.title}</Text>
+                </View>
+              )}
+            />
+          </View>
+          <View>
             <Text style={styles.firstHeader}>{SectionHeaders["I"]["A"]["2"]["firstHeader"]}</Text>
             <Text style={styles.secondHeader}>{SectionHeaders["I"]["A"]["2"]["secondHeader"]}</Text>
             <Text style={styles.thirdHeader}>{SectionHeaders["I"]["A"]["2"]["thirdHeader"]}</Text>
           </View>
+          <View>
+            <FlatList
+              data={omtData.filter((item: { title: string, code: string }) => item.code.startsWith('I-A-2')) as { title: string, code: string }[]} // Add type annotation for omtData
+              keyExtractor={(_, index) => index.toString()}
+              renderItem={({ item }) => (
+                <View>
+                  <Text style={styles.item}>{item.title}</Text>
+                </View>
+              )}
+            />
+          </View>
+
           <View>
             <Text style={styles.firstHeader}>{SectionHeaders["I"]["A"]["3"]["firstHeader"]}</Text>
             <Text style={styles.secondHeader}>{SectionHeaders["I"]["A"]["3"]["secondHeader"]}</Text>
