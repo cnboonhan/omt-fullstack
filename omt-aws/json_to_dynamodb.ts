@@ -1,6 +1,5 @@
 import { readFileSync } from 'fs';
 import { DocumentClient } from 'aws-sdk/clients/dynamodb';
-import { error } from 'console';
 
 const loadJsonFromFile = (filePath: string): any => {
     try {
