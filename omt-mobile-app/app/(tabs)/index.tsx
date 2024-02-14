@@ -37,7 +37,9 @@ export default function SearchScreen() {
           </View>
           <View>
             <FlatList
-              data={omtData.filter((item: { title: string, code: string }) => item.code.startsWith('I-A-1')) as { title: string, code: string }[]} // Add type annotation for omtData
+              data={omtData
+                .filter((item: { title: string, code: string }) => item.code.startsWith('I-A-1'))
+                .sort((a: { code: string }, b: { code: string }) => a.code.localeCompare(b.code)) as { title: string, code: string }[]}
               keyExtractor={(_, index) => index.toString()}
               renderItem={({ item }) => (
                 <View>
@@ -53,7 +55,9 @@ export default function SearchScreen() {
           </View>
           <View>
             <FlatList
-              data={omtData.filter((item: { title: string, code: string }) => item.code.startsWith('I-A-2')) as { title: string, code: string }[]} // Add type annotation for omtData
+              data={omtData
+                .filter((item: { title: string, code: string }) => item.code.startsWith('I-A-2'))
+                .sort((a: { code: string }, b: { code: string }) => a.code.localeCompare(b.code)) as { title: string, code: string }[]}
               keyExtractor={(_, index) => index.toString()}
               renderItem={({ item }) => (
                 <View>
