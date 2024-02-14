@@ -24,15 +24,16 @@ export default function ModalScreen() {
 
   getData();
   const displayData = omtData.filter((item: { code: string }) => item.code === params.code)[0] as { code: string, title: string, etiology: string, description: string, tags: string[], images: string[] };
+  console.log(displayData)
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>{displayData.code}</Text>
-      <Text style={styles.title}>{displayData.title}</Text>
-      <Text style={styles.title}>{displayData.etiology}</Text>
-      <Text style={styles.title}>{displayData.description}</Text>
-      <Text style={styles.title}>{displayData.tags}</Text>
-      <Text style={styles.title}>{displayData.images}</Text>
+      <Text style={styles.title}>{displayData != null ? displayData.code : 'loading..'}</Text>
+      <Text style={styles.title}>{displayData != null ? displayData.title : ''}</Text>
+      <Text style={styles.title}>{displayData != null ? displayData.etiology : ''}</Text>
+      <Text style={styles.title}>{displayData != null ? displayData.description : ''}</Text>
+      <Text style={styles.title}>{displayData != null ? displayData.tags : ''}</Text>
+      <Text style={styles.title}>{displayData != null ? displayData.images : ''}</Text>
       <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
 
       {/* Use a light status bar on iOS to account for the black space above the modal */}
