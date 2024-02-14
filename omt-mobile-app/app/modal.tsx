@@ -3,28 +3,14 @@ import { Platform, StyleSheet } from 'react-native';
 
 import { Text, View } from '@/components/Themed';
 import { useLocalSearchParams } from 'expo-router';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { getData } from "@/constants/DataEndpoints";
 import { useState } from 'react';
 
 export default function ModalScreen() {
   const params = useLocalSearchParams();
   const [omtData, setOmtData] = useState([]);
-  const getData = async () => {
-    try {
-      const jsonValue = await AsyncStorage.getItem('omtData');
-      const jsonValueNotNull = jsonValue != null ? JSON.parse(jsonValue) : null;
-      if (JSON.stringify(jsonValueNotNull) !== JSON.stringify(omtData)) {
-        setOmtData(jsonValueNotNull);
-        console.log("Modal data updated.")
-      }
-    } catch (e) {
-      console.log(e)
-    }
-  };
-
-  getData();
+  getData(omtData, setOmtData);
   const displayData = omtData.filter((item: { code: string }) => item.code === params.code)[0] as { code: string, title: string, etiology: string, description: string, tags: string[], images: string[] };
-  console.log(displayData)
 
   return (
     <View style={styles.container}>

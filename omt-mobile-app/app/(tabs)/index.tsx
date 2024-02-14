@@ -1,37 +1,36 @@
 import { View } from '@/components/Themed';
 import React, { useState } from 'react';
 import { SafeAreaView, ScrollView, StyleSheet, Text, FlatList } from 'react-native';
-import { SearchBar } from '@rneui/base';
 import { useColorScheme } from '@/components/useColorScheme';
 import { SectionHeaders } from "@/models/DataModels";
-import { UpdateEndpoint, RetrievalEndpoint } from "@/constants/DataEndpoints";
+import { UpdateEndpoint, RetrievalEndpoint, getData as getDataFromStorage } from "@/constants/DataEndpoints";
 import { Link } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { SearchBar, ListItem } from '@rneui/themed';
 
+fetch(RetrievalEndpoint)
+  .then(response => response.json())
+  .then(data => {
+    AsyncStorage.setItem('omtData', JSON.stringify(data));
+    console.log("Data has been updated.")
+  })
+  .catch(error => {
+    // Handle any errors that occurred during the request
+    console.error(error);
+  });
 
 export default function SearchScreen() {
   const colorScheme = useColorScheme();
   const useLightMode = colorScheme === 'light';
   const [omtData, setOmtData] = useState([]);
+  const [search, setSearch] = useState("");
 
-  fetch(RetrievalEndpoint)
-    .then(response => response.json())
-    .then(data => {
-      // Handle the response data here
-      if (JSON.stringify(data) !== JSON.stringify(omtData)) {
-        AsyncStorage.setItem('omtData', JSON.stringify(data));
-        setOmtData(data);
-        console.log("Data has been updated.")
-      }
-    })
-    .catch(error => {
-      // Handle any errors that occurred during the request
-      console.error(error);
-    });
+  getDataFromStorage(omtData, setOmtData);
+  console.log("Search Term: " + search);
 
   return (
     <View style={styles.searchScreenContainer}>
-      <SearchBar style={styles.searchBar} placeholder='Enter Condition' lightTheme={useLightMode} />
+      <SearchBar style={styles.searchBar} lightTheme={useLightMode} placeholder='Search' onChangeText={setSearch} value={search} />
       <SafeAreaView style={styles.infoView}>
         <ScrollView>
           <View>
@@ -43,6 +42,7 @@ export default function SearchScreen() {
             <FlatList
               data={omtData
                 .filter((item: { title: string, code: string }) => item.code.startsWith('I-A-1'))
+                .filter((item: { tags: string[] }) => item.tags.some(tag => tag.toLowerCase().includes(search.toLowerCase())))
                 .sort((a: { code: string }, b: { code: string }) => a.code.localeCompare(b.code)) as { title: string, code: string }[]}
               keyExtractor={(_, index) => index.toString()}
               renderItem={({ item }) => (
@@ -52,7 +52,12 @@ export default function SearchScreen() {
                     params: { code: item.code },
                   }}
                 >
-                  <Text style={styles.item}>{item.title}</Text>
+                  <ListItem>
+                    <ListItem.Content>
+                      <ListItem.Title style={styles.item}>{item.title}</ListItem.Title>
+                      <ListItem.Subtitle style={styles.itemCode}>{item.code}</ListItem.Subtitle>
+                    </ListItem.Content>
+                  </ListItem>
                 </Link>
 
               )}
@@ -78,7 +83,11 @@ const styles = StyleSheet.create({
   },
   item: {
     backgroundColor: '#fff',
-    padding: 5,
+    fontSize: 15
+  },
+  itemCode: {
+    backgroundColor: '#fff',
+    fontSize: 10
   },
   firstHeader: {
     backgroundColor: '#043d99',
