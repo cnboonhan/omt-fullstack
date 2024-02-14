@@ -5,6 +5,9 @@ import { SearchBar } from '@rneui/base';
 import { useColorScheme } from '@/components/useColorScheme';
 import { SectionHeaders } from "@/models/DataModels";
 import { UpdateEndpoint, RetrievalEndpoint } from "@/constants/DataEndpoints";
+import { Link } from 'expo-router';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 export default function SearchScreen() {
   const colorScheme = useColorScheme();
@@ -16,8 +19,9 @@ export default function SearchScreen() {
     .then(data => {
       // Handle the response data here
       if (JSON.stringify(data) !== JSON.stringify(omtData)) {
-        console.log("Data has been updated.")
+        AsyncStorage.setItem('omtData', JSON.stringify(data));
         setOmtData(data);
+        console.log("Data has been updated.")
       }
     })
     .catch(error => {
@@ -42,124 +46,18 @@ export default function SearchScreen() {
                 .sort((a: { code: string }, b: { code: string }) => a.code.localeCompare(b.code)) as { title: string, code: string }[]}
               keyExtractor={(_, index) => index.toString()}
               renderItem={({ item }) => (
-                <View>
+                <Link
+                  href={{
+                    pathname: "/modal",
+                    params: { code: item.code },
+                  }}
+                >
                   <Text style={styles.item}>{item.title}</Text>
-                </View>
+                </Link>
+
               )}
             />
           </View>
-          <View>
-            <Text style={styles.firstHeader}>{SectionHeaders["I"]["A"]["2"]["firstHeader"]}</Text>
-            <Text style={styles.secondHeader}>{SectionHeaders["I"]["A"]["2"]["secondHeader"]}</Text>
-            <Text style={styles.thirdHeader}>{SectionHeaders["I"]["A"]["2"]["thirdHeader"]}</Text>
-          </View>
-          <View>
-            <FlatList
-              data={omtData
-                .filter((item: { title: string, code: string }) => item.code.startsWith('I-A-2'))
-                .sort((a: { code: string }, b: { code: string }) => a.code.localeCompare(b.code)) as { title: string, code: string }[]}
-              keyExtractor={(_, index) => index.toString()}
-              renderItem={({ item }) => (
-                <View>
-                  <Text style={styles.item}>{item.title}</Text>
-                </View>
-              )}
-            />
-          </View>
-
-          <View>
-            <Text style={styles.firstHeader}>{SectionHeaders["I"]["A"]["3"]["firstHeader"]}</Text>
-            <Text style={styles.secondHeader}>{SectionHeaders["I"]["A"]["3"]["secondHeader"]}</Text>
-            <Text style={styles.thirdHeader}>{SectionHeaders["I"]["A"]["3"]["thirdHeader"]}</Text>
-          </View>
-          <View>
-            <Text style={styles.firstHeader}>{SectionHeaders["I"]["A"]["4"]["firstHeader"]}</Text>
-            <Text style={styles.secondHeader}>{SectionHeaders["I"]["A"]["4"]["secondHeader"]}</Text>
-            <Text style={styles.thirdHeader}>{SectionHeaders["I"]["A"]["4"]["thirdHeader"]}</Text>
-          </View>
-
-          <View>
-            <Text style={styles.firstHeader}>{SectionHeaders["I"]["B"]["1"]["firstHeader"]}</Text>
-            <Text style={styles.secondHeader}>{SectionHeaders["I"]["B"]["1"]["secondHeader"]}</Text>
-            <Text style={styles.thirdHeader}>{SectionHeaders["I"]["B"]["1"]["thirdHeader"]}</Text>
-          </View>
-          <View>
-            <Text style={styles.firstHeader}>{SectionHeaders["I"]["B"]["2"]["firstHeader"]}</Text>
-            <Text style={styles.secondHeader}>{SectionHeaders["I"]["B"]["2"]["secondHeader"]}</Text>
-            <Text style={styles.thirdHeader}>{SectionHeaders["I"]["B"]["2"]["thirdHeader"]}</Text>
-          </View>
-          <View>
-            <Text style={styles.firstHeader}>{SectionHeaders["I"]["B"]["3"]["firstHeader"]}</Text>
-            <Text style={styles.secondHeader}>{SectionHeaders["I"]["B"]["3"]["secondHeader"]}</Text>
-            <Text style={styles.thirdHeader}>{SectionHeaders["I"]["B"]["3"]["thirdHeader"]}</Text>
-          </View>
-          <View>
-            <Text style={styles.firstHeader}>{SectionHeaders["I"]["B"]["4"]["firstHeader"]}</Text>
-            <Text style={styles.secondHeader}>{SectionHeaders["I"]["B"]["4"]["secondHeader"]}</Text>
-            <Text style={styles.thirdHeader}>{SectionHeaders["I"]["B"]["4"]["thirdHeader"]}</Text>
-          </View>
-
-          <View>
-            <Text style={styles.firstHeader}>{SectionHeaders["II"]["A"]["firstHeader"]}</Text>
-            <Text style={styles.secondHeader}>{SectionHeaders["II"]["A"]["secondHeader"]}</Text>
-          </View>
-          <View>
-            <Text style={styles.firstHeader}>{SectionHeaders["II"]["B"]["firstHeader"]}</Text>
-            <Text style={styles.secondHeader}>{SectionHeaders["II"]["B"]["secondHeader"]}</Text>
-          </View>
-
-          <View>
-            <Text style={styles.firstHeader}>{SectionHeaders["III"]["A"]["1"]["firstHeader"]}</Text>
-            <Text style={styles.secondHeader}>{SectionHeaders["III"]["A"]["1"]["secondHeader"]}</Text>
-            <Text style={styles.thirdHeader}>{SectionHeaders["III"]["A"]["1"]["thirdHeader"]}</Text>
-          </View>
-          <View>
-            <Text style={styles.firstHeader}>{SectionHeaders["III"]["A"]["2"]["firstHeader"]}</Text>
-            <Text style={styles.secondHeader}>{SectionHeaders["III"]["A"]["2"]["secondHeader"]}</Text>
-            <Text style={styles.thirdHeader}>{SectionHeaders["III"]["A"]["2"]["thirdHeader"]}</Text>
-          </View>
-
-          <View>
-            <Text style={styles.firstHeader}>{SectionHeaders["III"]["B"]["1"]["firstHeader"]}</Text>
-            <Text style={styles.secondHeader}>{SectionHeaders["III"]["B"]["1"]["secondHeader"]}</Text>
-            <Text style={styles.thirdHeader}>{SectionHeaders["III"]["B"]["1"]["thirdHeader"]}</Text>
-          </View>
-          <View>
-            <Text style={styles.firstHeader}>{SectionHeaders["III"]["B"]["2"]["firstHeader"]}</Text>
-            <Text style={styles.secondHeader}>{SectionHeaders["III"]["B"]["2"]["secondHeader"]}</Text>
-            <Text style={styles.thirdHeader}>{SectionHeaders["III"]["B"]["2"]["thirdHeader"]}</Text>
-          </View>
-          <View>
-            <Text style={styles.firstHeader}>{SectionHeaders["III"]["B"]["3"]["firstHeader"]}</Text>
-            <Text style={styles.secondHeader}>{SectionHeaders["III"]["B"]["3"]["secondHeader"]}</Text>
-            <Text style={styles.thirdHeader}>{SectionHeaders["III"]["B"]["3"]["thirdHeader"]}</Text>
-          </View>
-          <View>
-            <Text style={styles.firstHeader}>{SectionHeaders["III"]["B"]["4"]["firstHeader"]}</Text>
-            <Text style={styles.secondHeader}>{SectionHeaders["III"]["B"]["4"]["secondHeader"]}</Text>
-            <Text style={styles.thirdHeader}>{SectionHeaders["III"]["B"]["4"]["thirdHeader"]}</Text>
-          </View>
-
-          <View>
-            <Text style={styles.firstHeader}>{SectionHeaders["III"]["C"]["1"]["firstHeader"]}</Text>
-            <Text style={styles.secondHeader}>{SectionHeaders["III"]["C"]["1"]["secondHeader"]}</Text>
-            <Text style={styles.thirdHeader}>{SectionHeaders["III"]["C"]["1"]["thirdHeader"]}</Text>
-          </View>
-          <View>
-            <Text style={styles.firstHeader}>{SectionHeaders["III"]["C"]["2"]["firstHeader"]}</Text>
-            <Text style={styles.secondHeader}>{SectionHeaders["III"]["C"]["2"]["secondHeader"]}</Text>
-            <Text style={styles.thirdHeader}>{SectionHeaders["III"]["C"]["2"]["thirdHeader"]}</Text>
-          </View>
-
-          <View>
-            <Text style={styles.firstHeader}>{SectionHeaders["IV"]["A"]["firstHeader"]}</Text>
-            <Text style={styles.secondHeader}>{SectionHeaders["IV"]["A"]["secondHeader"]}</Text>
-          </View>
-          <View>
-            <Text style={styles.firstHeader}>{SectionHeaders["IV"]["B"]["firstHeader"]}</Text>
-            <Text style={styles.secondHeader}>{SectionHeaders["IV"]["B"]["secondHeader"]}</Text>
-          </View>
-
         </ScrollView>
       </SafeAreaView>
     </View>
