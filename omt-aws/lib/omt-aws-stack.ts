@@ -3,11 +3,13 @@ import { Construct } from 'constructs';
 import * as dynamodb from 'aws-cdk-lib/aws-dynamodb';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
 import * as iam from 'aws-cdk-lib/aws-iam';
+import * as cognito from 'aws-cdk-lib/aws-cognito';
 
 export class OmtAwsStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
+    // Database for storing OMT data
     const omt_db = new dynamodb.Table(this, 'OmtTable', {
       partitionKey: { name: 'code', type: dynamodb.AttributeType.STRING },
       removalPolicy: cdk.RemovalPolicy.RETAIN,
@@ -68,5 +70,17 @@ export class OmtAwsStack extends cdk.Stack {
     new cdk.CfnOutput(this, 'OmtRetrievalFunctionUrlExport', {
       value: omt_retrieval_lambda_url.url,
     })
+
+
+    // User Login Management
+    const omtUserPool = new cognito.UserPool(this, 'UserPool', {
+      selfSignUpEnabled: true,
+      autoVerify: { email: true },
+      signInAliases: { email: true },
+    });
+
+    const omtUserPoolClient = new cognito.UserPoolClient(this, 'UserPoolClient', {
+      userPool: omtUserPool,
+    });
   }
 }
